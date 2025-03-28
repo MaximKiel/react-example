@@ -10,6 +10,25 @@
 
 </head>
 <body>
-Test data
+
+<div id="root">
+
+</div>
+
+<script type="text/babel">
+
+    function MyButton() {
+        return (
+            <div>
+                <button>Test button</button>
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<MyButton/>);
+
+</script>
+
 </body>
 </html>
