@@ -17,16 +17,26 @@
 
 <script type="text/babel">
 
-    function MyButton() {
+    function MyButton({title = "btn", color = "black"}) {
         return (
             <div>
-                <button>Test button</button>
+                <button style={{color: color}}>{title}</button>
+            </div>
+        );
+    }
+
+    function ButtonManager() {
+        return (
+            <div>
+                <MyButton title="button1" color="blue"/>
+                <MyButton title="button2" color="red"/>
+                <MyButton/>
             </div>
         );
     }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<MyButton/>);
+    root.render(<ButtonManager/>);
 
 </script>
 
