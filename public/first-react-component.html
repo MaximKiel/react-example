@@ -17,15 +17,15 @@
 
 <script type="text/babel">
 
-    function alertTitle(title) {
-        alert(title);
-    }
+    // function alertTitle(title) {
+    //     alert(title);
+    // }
+    //
+    // function printTitle(title) {
+    //     console.log(title);
+    // }
 
-    function printTitle(title) {
-        console.log(title);
-    }
-
-    function MyButton({title = "btn", color = "black", handlerFunction}) {
+    function MyButton({title = "btn", color = "black", width}) {
 
         // var handlerFunction = () => printTitle(title);
         //
@@ -33,14 +33,20 @@
         //     handlerFunction = () => alertTitle(title);
         // }
 
+        // кортеж (tuple)
+        const [count, setCount] = React.useState(0);
+        const [newWidth, setNewWidth] = React.useState(width ? parseInt(width) : 100);
+
         return (
             <div>
                 <button
-                    style={{color: color}}
-                    onClick={
-                        handlerFunction
-                    }
-                >{title}
+                    style={{color: color, width: newWidth}}
+                    onClick={() => {
+                        console.log(count);
+                        setCount(count + 1);
+                        setNewWidth(newWidth + 50);
+                    }}
+                >{count}
 
                 </button>
             </div>
@@ -50,9 +56,9 @@
     function ButtonManager() {
         return (
             <div>
-                <MyButton title="button1" color="blue" handlerFunction={() => printTitle("button1")}/>
-                <MyButton title="button2" color="red" handlerFunction={() => alertTitle("button2")}/>
-                <MyButton/>
+                <MyButton title="button1" color="blue" width="250"/>
+                <MyButton title="button2" color="red" width="200"/>
+                <MyButton title="button3" color="black"/>
             </div>
         );
     }
