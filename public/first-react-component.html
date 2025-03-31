@@ -17,10 +17,19 @@
 
 <script type="text/babel">
 
+    function handleClick() {
+        console.log("clicked");
+    }
+
     function MyButton({title = "btn", color = "black"}) {
         return (
             <div>
-                <button style={{color: color}}>{title}</button>
+                <button
+                    style={{color: color}}
+                    onClick={handleClick}
+                >{title}
+
+                </button>
             </div>
         );
     }
