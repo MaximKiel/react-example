@@ -17,7 +17,7 @@
 
 <script type="text/babel">
 
-    function handleClick(title) {
+    function printTitle(title) {
         console.log(title);
     }
 
@@ -27,7 +27,7 @@
                 <button
                     style={{color: color}}
                     onClick={
-                        () => handleClick(title)
+                        () => printTitle(title)
                     }
                 >{title}
 
