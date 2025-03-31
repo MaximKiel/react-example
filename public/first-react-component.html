@@ -22,12 +22,15 @@
     }
 
     function MyButton({title = "btn", color = "black"}) {
+
+        const handlerFunction = () => printTitle(title);
+
         return (
             <div>
                 <button
                     style={{color: color}}
                     onClick={
-                        () => printTitle(title)
+                        handlerFunction
                     }
                 >{title}
 
