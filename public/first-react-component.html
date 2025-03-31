@@ -17,13 +17,21 @@
 
 <script type="text/babel">
 
+    function alertTitle(title) {
+        alert(title);
+    }
+
     function printTitle(title) {
         console.log(title);
     }
 
-    function MyButton({title = "btn", color = "black"}) {
+    function MyButton({title = "btn", color = "black", handlerFunction}) {
 
-        const handlerFunction = () => printTitle(title);
+        // var handlerFunction = () => printTitle(title);
+        //
+        // if (title.length > 5) {
+        //     handlerFunction = () => alertTitle(title);
+        // }
 
         return (
             <div>
@@ -42,8 +50,8 @@
     function ButtonManager() {
         return (
             <div>
-                <MyButton title="button1" color="blue"/>
-                <MyButton title="button2" color="red"/>
+                <MyButton title="button1" color="blue" handlerFunction={() => printTitle("button1")}/>
+                <MyButton title="button2" color="red" handlerFunction={() => alertTitle("button2")}/>
                 <MyButton/>
             </div>
         );
