@@ -12,7 +12,35 @@
 
 <div id="root"></div>
 
+</body>
+
 <script type="text/babel">
+
+    function FilterableProductTable() {
+        return (
+            <div>
+                <SearchBar/>
+                <ProductTable/>
+            </div>
+        );
+    }
+
+    function SearchBar() {
+
+    }
+
+    function ProductTable() {
+
+    }
+
+    function ProductCategoryRow() {
+
+    }
+
+    function ProductRow() {
+
+    }
+
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render();
 
@@ -26,6 +54,4 @@
         {category: "Овощи", price: "50", stocked: false, name: "Картофель"}
     ];
 </script>
-
-</body>
 </html>
