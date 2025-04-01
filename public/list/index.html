@@ -10,5 +10,22 @@
 </head>
 <body>
 
+<div id="root"></div>
+
+<script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render();
+
+    const PRODUCTS = [
+        {category: "Фрукты", price: "500", stocked: true, name: "Ананас"},
+        {category: "Фрукты", price: "200", stocked: false, name: "Банан"},
+        {category: "Фрукты", price: "130", stocked: true, name: "Яблоко"},
+        {category: "Фрукты", price: "180", stocked: true, name: "Груша"},
+        {category: "Овощи", price: "400", stocked: true, name: "Помидор"},
+        {category: "Овощи", price: "240", stocked: true, name: "Огурец"},
+        {category: "Овощи", price: "50", stocked: false, name: "Картофель"}
+    ];
+</script>
+
 </body>
 </html>
