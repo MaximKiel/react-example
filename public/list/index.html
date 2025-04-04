@@ -10,33 +10,44 @@
 </head>
 <body>
 
+<!--
+Обязательно должен быть компонент, внутрь которого вы внедрите корневой компонент React
+Далее у этого компонента могут быть уже внутренние компоненты
+-->
 <div id="root"></div>
 
 </body>
 
 <script type="text/babel">
 
+    //  общий контейнер для поиска и отображения
     function FilterableProductTable({products}) {
 
-        const [filterText, setFilterText] = React.useState('');
-        const [inStockOnly, setInStockOnly] = React.useState(false);
+        // если эти значения будут изменяться, то будет происходить авто перерисовка компонентов, которые их используют
+        // поэтому нужно быть внимательным и следить за всеми местами в коде, где изменяете эти значения!
+        const [filterText, setFilterText] = React.useState(''); // filterText - введенный текст для поиска
+        const [inStockOnly, setInStockOnly] = React.useState(false); // галочка для фильтрации "только в наличии"
 
-        const filteredProduct = [];
+        // при каждой отрисовке компонента - будут считывать переменные из состояния и фильтровать данные
+        const filteredProducts = [];
 
         products.forEach((product) => {
+            // будет ли добавлен товар для отображения
             var canAdd = true;
-            if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+            // сначала фильтруем по тексту
+            if (
+                product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1 // если товар НЕ содержит поисковый текст
+            ) {
                 canAdd = false;
             }
+            // фильтруем по переключателю (в наличии или нет)
             if (inStockOnly && !product.stocked) {
                 canAdd = false;
             }
             if (canAdd) {
-                filteredProduct.push(product);
+                filteredProducts.push(product);
             }
         });
-
-        console.log(filteredProduct);
 
         return (
             <div>
@@ -44,32 +55,37 @@
                     filterText={filterText}
                     onFilterTextChange={setFilterText}
 
-                    inStockOnly={inStockOnly}
-                    onInStockOnlyChange={setInStockOnly}
+                    inStockOnly={inStockOnly} // поставить галочку или нет в дочернем компоненте
+                    onInStockOnlyChange={setInStockOnly} // ссылка на метод
                 />
-                <ProductTable products={filteredProduct}/>
+                <ProductTable products={filteredProducts}/>
             </div>
         );
     }
 
+    // область поиска (влияет на данные таблицы).
+    // важно! компонент не должен изменять входящие свойства, а только вызывать callback методы,
+    // чтобы родительский компонент смог использовать измененные значения
     function SearchBar({
-                           filterText,
-                           onFilterTextChange,
-                           inStockOnly: inStockOnly,
-                           onInStockOnlyChange
+                           filterText, // только для чтения (read-only)
+                           onFilterTextChange, // callback метод для обработки в родительском компоненте
+
+                           inStockOnly: inStockOnly, // только для чтения (read-only) - будет ли нажата галочка при отображении
+                           onInStockOnlyChange // callback метод для обработки в родительском компоненте (при нажатии на галочку)
                        }) {
         return (
             <>
                 <div>
                     <form role="search" id="form">
-                        <input type="search"
-                               value={filterText}
-                               placeholder="Поиск..."
-                               onChange={(e) => onFilterTextChange(e.target.checked)}
+                        <input
+                            type="search"
+                            value={filterText}
+                            placeholder="Поиск..."
+                            onChange={(e) => onFilterTextChange(e.target.value)}
                         />
                     </form>
                 </div>
-                
+
                 <div>
                     Показать только в наличии
                     <input type="checkbox" id="box"
@@ -81,25 +97,28 @@
         );
     }
 
+    // таблица с данными товаров
     function ProductTable({products}) {
+        // массив React компонентов ProductRow
         const rows = [];
 
         let lastCategory = null;
 
+        // проходим по всем продуктам и формируем из них React компонент ProductRow
         products.forEach((product) => {
-            if (product.category !== lastCategory) {
+            // отображение категории
+            if (product.category !== lastCategory) { // если категория товаров изменилась - тогда отображаем ее
                 rows.push(
                     <ProductCategoryRow
                         category={product.category}
-                        key={product.name}
-                    />
+                        key={product.category}/>
                 );
             }
+            // отображение товара в виде строки
             rows.push(
                 <ProductRow
                     product={product}
-                    key={product.name}
-                />
+                    key={product.name}/>
             );
             lastCategory = product.category;
         });
@@ -107,18 +126,19 @@
         return (
             <div>
                 <table>
-                    <thread>
-                        <tr>
-                            <th>Название</th>
-                            <th>Цена</th>
-                        </tr>
-                    </thread>
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Цена (руб)</th>
+                    </tr>
+                    </thead>
                     <tbody>{rows}</tbody>
                 </table>
             </div>
         );
     }
 
+    // строка таблицы с названием категории (занимает всю строку)
     function ProductCategoryRow({category}) {
         return (
             <tr>
@@ -129,29 +149,37 @@
         );
     }
 
+    // строка таблицы с информацией о товаре
     function ProductRow({product}) {
+        // можем вернуть зачеркнутый тег с названием товара
         const name = product.stocked ? product.name :
             <s>
                 {product.name}
             </s>;
+
         return (
             <tr>
                 <td>{name}</td>
                 <td>{product.price}</td>
+
             </tr>
         );
     }
 
+    // данные можем получать по сети после запроса на backend
+    // в нашем примере данные должны быть проинициализированы раньше, чем внедрение корневого компонента React
+    // для упрощения - все товары упорядочены каждый в своей категории (и категории идут последовательно)
     const PRODUCTS = [
-        {category: "Фрукты", price: "500", stocked: true, name: "Ананас"},
-        {category: "Фрукты", price: "200", stocked: false, name: "Банан"},
-        {category: "Фрукты", price: "130", stocked: true, name: "Яблоко"},
-        {category: "Фрукты", price: "180", stocked: true, name: "Груша"},
-        {category: "Овощи", price: "400", stocked: true, name: "Помидор"},
-        {category: "Овощи", price: "240", stocked: true, name: "Огурец"},
-        {category: "Овощи", price: "50", stocked: false, name: "Картофель"}
+        {category: "Фрукты", price: "100", stocked: true, name: "Ананас"},
+        {category: "Фрукты", price: "135", stocked: true, name: "Абрикос"},
+        {category: "Фрукты", price: "200", stocked: false, name: "Яблоко"},
+        {category: "Фрукты", price: "500", stocked: false, name: "Банан"},
+        {category: "Овощи", price: "20", stocked: true, name: "Картофель"},
+        {category: "Овощи", price: "85", stocked: false, name: "Помидор"},
+        {category: "Овощи", price: "92", stocked: true, name: "Огурец"}
     ];
 
+    // внедрение компонента на страницу
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<FilterableProductTable products={PRODUCTS}/>);
 
