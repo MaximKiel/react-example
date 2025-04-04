@@ -17,16 +17,48 @@
 <script type="text/babel">
 
     function FilterableProductTable({products}) {
+
+        const [inStockOnly, setInStockOnly] = React.useState(false);
+        const filteredProduct = [];
+
+        products.forEach((product) => {
+            var canAdd = true;
+            if (inStockOnly && !product.stocked) {
+                canAdd = false;
+            }
+            if (canAdd) {
+                filteredProduct.push(product);
+            }
+        });
+
+        console.log(filteredProduct);
+
         return (
             <div>
-                <SearchBar/>
-                <ProductTable products={products}/>
+                <SearchBar
+                    inStockOnly={inStockOnly}
+                    onInStockOnlyChange={setInStockOnly}
+                />
+                <ProductTable products={filteredProduct}/>
             </div>
         );
     }
 
-    function SearchBar() {
-
+    function SearchBar({
+                           inStockOnly: inStockOnly,
+                           onInStockOnlyChange
+                       }) {
+        return (
+            <>
+                <div>
+                    Показать только в наличии
+                    <input type="checkbox" id="box"
+                           checked={inStockOnly}
+                           onChange={(e) => onInStockOnlyChange(e.target.checked)}
+                    />
+                </div>
+            </>
+        );
     }
 
     function ProductTable({products}) {
