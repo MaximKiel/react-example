@@ -18,11 +18,16 @@
 
     function FilterableProductTable({products}) {
 
+        const [filterText, setFilterText] = React.useState('');
         const [inStockOnly, setInStockOnly] = React.useState(false);
+
         const filteredProduct = [];
 
         products.forEach((product) => {
             var canAdd = true;
+            if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+                canAdd = false;
+            }
             if (inStockOnly && !product.stocked) {
                 canAdd = false;
             }
@@ -36,6 +41,9 @@
         return (
             <div>
                 <SearchBar
+                    filterText={filterText}
+                    onFilterTextChange={setFilterText}
+
                     inStockOnly={inStockOnly}
                     onInStockOnlyChange={setInStockOnly}
                 />
@@ -45,11 +53,23 @@
     }
 
     function SearchBar({
+                           filterText,
+                           onFilterTextChange,
                            inStockOnly: inStockOnly,
                            onInStockOnlyChange
                        }) {
         return (
             <>
+                <div>
+                    <form role="search" id="form">
+                        <input type="search"
+                               value={filterText}
+                               placeholder="Поиск..."
+                               onChange={(e) => onFilterTextChange(e.target.checked)}
+                        />
+                    </form>
+                </div>
+                
                 <div>
                     Показать только в наличии
                     <input type="checkbox" id="box"
